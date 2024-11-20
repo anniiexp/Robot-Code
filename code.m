@@ -81,15 +81,24 @@ while true
     currentColor = brick.ColorCode(2);
     
     % 5 is red
-    if currentColor == 5 
-        % stops robot when red is detected
+       if currentColor == 5
+        % Stops robot when red is detected
         brick.StopAllMotors('Brake');
         pause(1);
 
-        % resumes movement
+        % If red is detected for the first time, turn left
+        if ~hasTurnedRed
+            disp('Red detected for the first time. Turning left...');
+            brick.MoveMotorAngleRel('A', -50, 180, 'Brake');  % Turn left
+            brick.WaitForMotor('A');  % Wait for the turn to complete
+            hasTurnedRed = true;  % Set flag to indicate red turn is completed
+        end
+
+        % Resume movement after red detection
         brick.MoveMotor('A', 30);
         brick.MoveMotor('D', 30);
     end
+
     
     % Checks for blue
     if currentColor == 2 & ~wasBlue
